@@ -7,14 +7,6 @@
     navigator.serviceWorker.register('/sw.js');
   }
 </script>
-    <!-- منع المتصفحات من تشغيل الموقع داخل إطار (مكافحة Clickjacking) -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
-
-<!-- منع المتصفحات من تخمين نوع الملفات (MIME type sniffing) -->
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-
-<!-- تعزيز الحماية عبر بروتوكول HTTPS -->
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>دافيس للأنظمة الأمنية الحساسة | Dafis Solutions</title>
