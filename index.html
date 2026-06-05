@@ -1,49 +1,1491 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقعي الاحترافي</title>
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1e293b">
-    <link rel="apple-touch-icon" href="/icon-192x192.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دافيس للأنظمة الأمنية الحساسة | Dafis Solutions</title>
+    
+    <!-- Google Fonts: Tajawal & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#04070F',
+                            card: '#0D1220',
+                            cardLight: '#151C2E',
+                            red: '#E31C1C',
+                            redHover: '#FF3333',
+                            redGlow: 'rgba(227, 28, 28, 0.4)',
+                            textMuted: '#94A3B8',
+                            slateAccent: '#1E293B',
+                            neonGreen: '#00FF66'
+                        }
+                    },
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #faf8f5;
-            color: #1e293b;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 90vh;
-            margin: 0;
-            text-align: center;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #04070F;
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
         }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            max-width: 450px;
-            width: 90%;
+        
+        /* Tactical grid background overlay */
+        .cyber-grid {
+            background-image: 
+                linear-gradient(to right, rgba(227, 28, 28, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(227, 28, 28, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        /* Brushed Metal Texture */
+        .brushed-metal {
+            background: linear-gradient(145deg, #0e1424 0%, #151d33 50%, #0d1220 100%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .neo-glow-red {
+            box-shadow: 0 0 20px rgba(227, 28, 28, 0.25);
+        }
+
+        .neo-glow-red:hover {
+            box-shadow: 0 0 30px rgba(227, 28, 28, 0.45);
+        }
+
+        .text-neon-glow {
+            text-shadow: 0 0 12px rgba(227, 28, 28, 0.6);
+        }
+
+        /* Radar scan wave effect */
+        @keyframes radar-pulse {
+            0% { transform: scale(0.9); opacity: 0.9; }
+            50% { opacity: 0.3; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        .pulse-wave {
+            animation: radar-pulse 2.2s infinite ease-out;
+        }
+
+        /* Hide default scrollbar on mobile horizontal containers */
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>مرحباً بك في موقعك الجديد!</h1>
-        <p>هذا الموقع مهيأ بالكامل ليعمل كتطبيق هاتف (PWA) قابل للتثبيت عبر متصفح Google Chrome.</p>
+<body class="text-gray-100 antialiased selection:bg-brand-red selection:text-white">
+
+    <!-- Toast Alerts Stack -->
+    <div id="toast-container" class="fixed top-5 left-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+    <!-- PWA Install Overlay -->
+    <div id="install-banner" class="hidden fixed bottom-6 left-6 right-6 md:left-auto md:max-w-md bg-gradient-to-r from-brand-card to-brand-slateAccent border border-brand-red/30 p-4 rounded-2xl shadow-2xl z-50 flex flex-col md:flex-row items-center justify-between gap-4 animate-bounce">
+        <div class="flex items-center gap-3">
+            <div class="bg-brand-red/20 p-2.5 rounded-xl text-brand-red">
+                <i data-lucide="smartphone"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">تثبيت تطبيق دافيس بتبسة</h4>
+                <p class="text-xs text-brand-textMuted mt-0.5">تصفح المشاريع الميدانية، احسب الكلفة واطلب معاينة فورية دون إنترنت</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 w-full md:w-auto">
+            <button id="btn-install-pwa" class="flex-1 md:flex-none px-4 py-2 bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">
+                تثبيت الآن
+            </button>
+            <button id="btn-close-install" class="p-2 text-brand-textMuted hover:text-white transition-colors">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
     </div>
 
+    <!-- Header & Blurred Glassmorphism Navigation -->
+    <header class="sticky top-0 z-40 bg-brand-dark/90 backdrop-blur-md border-b border-white/5">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3">
+                <div class="bg-brand-red w-11 h-11 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-brand-red/40">
+                    <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-wider text-white">DAFIS</span>
+                    <span class="block text-[10px] tracking-widest text-brand-red font-bold uppercase -mt-1">SOLUTIONS</span>
+                </div>
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-8 text-xs font-black uppercase tracking-widest">
+                <a href="#about" class="text-brand-textMuted hover:text-white transition-colors">من نحن</a>
+                <a href="#accreditation" class="text-brand-textMuted hover:text-white transition-colors">الاعتماد والترخيص</a>
+                <a href="#activities" class="text-brand-textMuted hover:text-white transition-colors">الرموز والأنشطة</a>
+                <a href="#portfolio" class="text-brand-textMuted hover:text-white transition-colors">سجل المشاريع</a>
+                <a href="#quote-calculator" class="text-brand-red hover:text-brand-redHover transition-colors">لوحة تقدير السعر</a>
+                <a href="#survey-form" class="text-brand-textMuted hover:text-white transition-colors">طلب معاينة</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <a href="https://wa.me/213659849656" target="_blank" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-950/30 transition-all">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>طلب معاينة فورية</span>
+                </a>
+                <button id="mobile-menu-btn" class="lg:hidden p-2 text-brand-textMuted hover:text-white focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-brand-card/95 border-b border-white/5 py-5 px-6 flex flex-col gap-4 animate-fadeIn">
+            <a href="#about" class="text-brand-textMuted hover:text-white transition-colors text-sm font-bold flex items-center gap-2.5"><i data-lucide="info" class="w-5 h-5"></i> من نحن</a>
+            <a href="#accreditation" class="text-brand-textMuted hover:text-white transition-colors text-sm font-bold flex items-center gap-2.5"><i data-lucide="award" class="w-5 h-5"></i> الاعتماد والترخيص</a>
+            <a href="#activities" class="text-brand-textMuted hover:text-white transition-colors text-sm font-bold flex items-center gap-2.5"><i data-lucide="shield-check" class="w-5 h-5"></i> مجالات العمل</a>
+            <a href="#portfolio" class="text-brand-textMuted hover:text-white transition-colors text-sm font-bold flex items-center gap-2.5"><i data-lucide="folder-kanban" class="w-5 h-5"></i> سجل المشاريع</a>
+            <a href="#quote-calculator" class="text-brand-red hover:text-brand-redHover transition-colors text-sm font-bold flex items-center gap-2.5"><i data-lucide="calculator" class="w-5 h-5"></i> حاسبة التقدير الأمني</a>
+            <a href="#survey-form" class="text-brand-textMuted hover:text-white transition-colors text-sm font-bold flex items-center gap-2.5"><i data-lucide="clipboard-list" class="w-5 h-5"></i> طلب معاينة ميدانية</a>
+            <a href="#contact" class="text-white bg-brand-red/15 border border-brand-red/30 py-2.5 px-4 rounded-xl text-sm font-bold text-center flex items-center justify-center gap-2"><i data-lucide="phone" class="w-5 h-5"></i> اتصل بنا</a>
+        </div>
+    </header>
+
+    <!-- Hero Cyberpunk Showcase Section -->
+    <section class="relative overflow-hidden py-16 md:py-24 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-slateAccent/45 via-brand-dark to-brand-dark border-b border-white/5 cyber-grid">
+        <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+            
+            <div class="lg:col-span-7 space-y-6 text-right">
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-red/10 border border-brand-red/30 text-[10px] font-black tracking-widest text-brand-red uppercase">
+                    <span class="w-2 h-2 rounded-full bg-brand-red animate-ping"></span>
+                    ترخيص وزارة الداخلية والجماعات المحلية | النوع الأول بتبسة
+                </span>
+                <h1 class="text-4xl md:text-6xl font-black leading-tight text-white">
+                    نراقب، نحمي، نؤمن <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-red via-rose-500 to-amber-500 text-neon-glow">بيئة تقنية منيعة ومحصنة</span>
+                </h1>
+                <p class="text-brand-textMuted text-sm md:text-base leading-relaxed max-w-2xl">
+                    مؤسسة دافيس سوليوشنز الشريك الإستراتيجي المؤهل رسمياً في هندسة وتأمين المنشآت الحيوية والصناعية والتجارية بالجزائر. لا نكتفي بتركيب الأجهزة، بل نقوم ببناء منظومات محكمة تعتمد بالكامل على تكنولوجيا الذكاء الاصطناعي وبصمات الوجه وغرف التحكم المتقدمة.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+                    <a href="#survey-form" class="px-6 py-4 bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-xl shadow-brand-red/30 transition-all transform hover:-translate-y-0.5 animate-pulse">
+                        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                        احجز معاينة ميدانية مجانية
+                    </a>
+                    <a href="#quote-calculator" class="px-6 py-4 bg-brand-slateAccent hover:bg-brand-slateAccent/80 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 border border-white/10 transition-all">
+                        حاسبة تقدير المواصفات والكلفة
+                        <i data-lucide="calculator" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Brushed Metal Visual Card -->
+            <div class="lg:col-span-5 flex justify-center relative">
+                <div class="absolute -inset-8 bg-brand-red/10 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+                <div class="relative brushed-metal rounded-3xl p-6 w-full max-w-sm flex flex-col items-center shadow-2xl">
+                    <div class="w-full flex justify-between items-center mb-6">
+                        <span class="text-[10px] font-mono font-bold text-brand-red tracking-widest uppercase">DAFIS PUBLIC SECURITY</span>
+                        <div class="w-2.5 h-2.5 rounded-full bg-brand-red animate-pulse"></div>
+                    </div>
+                    
+                    <!-- Decorative security hub visualization -->
+                    <div class="w-full h-52 bg-gradient-to-b from-[#0a0d14] to-[#121824] rounded-2xl border border-white/5 flex flex-col items-center justify-center relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-cover bg-center opacity-10 mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&q=80&w=600');"></div>
+                        <div class="w-28 h-28 rounded-full border border-brand-red/35 flex items-center justify-center bg-brand-dark/90 relative shadow-inner">
+                            <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-brand-red/25 to-transparent flex items-center justify-center border border-dashed border-brand-red/20 animate-spin-slow"></div>
+                            <div class="absolute">
+                                <i data-lucide="scan-eye" class="text-brand-red w-8 h-8 animate-pulse"></i>
+                            </div>
+                        </div>
+                        <span class="mt-4 font-black text-sm tracking-widest text-white uppercase shimmer-text">DAFIS SOLUTIONS</span>
+                    </div>
+
+                    <div class="w-full mt-6 bg-brand-slateAccent/50 rounded-xl p-4 border border-white/5 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-brand-red/10 rounded-lg text-brand-red">
+                                <i data-lucide="smartphone" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] text-brand-textMuted">بوابة الحماية المتكاملة</span>
+                                <span class="block text-xs font-bold text-white">تطبيق الهواتف الذكية</span>
+                            </div>
+                        </div>
+                        <button onclick="triggerPwaInstall()" class="px-3 py-1.5 bg-brand-red hover:bg-brand-redHover text-[10px] font-bold text-white rounded-lg transition-colors">
+                            تثبيت
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Administrative Credentials -->
+    <section id="accreditation" class="py-12 bg-brand-card/30 border-b border-white/5">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="space-y-2">
+                    <h2 class="text-2xl md:text-3xl font-black text-white">الاعتماد الأمني والتراخيص</h2>
+                    <p class="text-brand-textMuted text-xs leading-relaxed">
+                        مؤسسة مرخصة ومؤهلة رسمياً لممارسة الأنشطة الأمنية الحساسة والتجهيزات الاستراتيجية من المستوى ج.
+                    </p>
+                </div>
+                <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-brand-card border border-white/5 rounded-2xl p-5 flex gap-4 items-start relative overflow-hidden">
+                        <div class="bg-brand-red/10 p-2.5 rounded-xl text-brand-red shrink-0">
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="block text-[10px] font-bold text-brand-red uppercase">وزارة الداخلية والجماعات المحلية</span>
+                            <span class="block text-sm font-bold text-white">اعتماد أمني وزاري من النوع الأول</span>
+                            <p class="text-[11px] text-brand-textMuted leading-relaxed">لممارسة الأنشطة الفنية والهندسية المنصبة على التجهيزات الحساسة والمنشآت الحيوية.</p>
+                        </div>
+                    </div>
+                    <div class="bg-brand-card border border-white/5 rounded-2xl p-5 flex gap-4 items-start relative overflow-hidden">
+                        <div class="bg-brand-red/10 p-2.5 rounded-xl text-brand-red shrink-0">
+                            <i data-lucide="file-key-2" class="w-6 h-6"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="block text-[10px] font-bold text-brand-red uppercase">المركز الوطني للسجل التجاري</span>
+                            <span class="block text-xs font-bold text-white">سجل تجاري رقم: 2954240123-12/00</span>
+                            <span class="block text-xs text-brand-textMuted font-mono">المعرف الضريبي (NIF): 201091240</span>
+                            <span class="block text-[10px] text-white font-medium mt-1">مديرية الضرائب - ولاية تبسة</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- General Manager's Statement -->
+    <section id="about" class="py-16 container mx-auto px-4">
+        <div class="bg-gradient-to-br from-brand-card to-brand-slateAccent border border-white/10 rounded-3xl p-8 md:p-12 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-16 -mr-16 w-52 h-52 bg-brand-red/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                <div class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-brand-red/85 flex items-center justify-center bg-brand-dark shrink-0 shadow-xl shadow-brand-red/20">
+                    <i data-lucide="user" class="text-brand-red w-12 h-12 md:w-16 md:h-16"></i>
+                </div>
+                <div class="space-y-4 text-right">
+                    <div class="inline-flex items-center gap-1.5 text-xs font-black text-brand-red uppercase tracking-widest">
+                        <span class="w-1.5 h-1.5 bg-brand-red rounded-full"></span>
+                        كلمة الإدارة العليا والتنفيذية
+                    </div>
+                    <blockquote class="text-base md:text-lg font-medium leading-relaxed italic text-white">
+                        "لم يعد الأمن مجرد أجهزة تُركّب، بل منظومة ذكية متكاملة تصنع الفارق بين استمرارية الأعمال والأزمات المفاجئة. من هذا المنطلق، تأسست Dafis Solutions لتكون الشريك الاستراتيجي الموثوق في هندسة وتأمين المنشآت الحيوية والتجارية في الجزائر. نحن لا نبيع معدات؛ بل نصمم بيئات تقنية متكاملة ومحمية تعتمد على الذكاء الاصطناعي."
+                    </blockquote>
+                    <div>
+                        <cite class="block font-black text-white not-italic text-sm">السيد مسعودي أحمد المختار</cite>
+                        <span class="block text-[10px] text-brand-textMuted uppercase">المالك والمدير العام | مؤسسة Dafis Solutions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Interactive Quote Estimator / Security Calculator -->
+    <section id="quote-calculator" class="py-16 bg-gradient-to-t from-brand-dark to-brand-card/40 border-y border-white/5">
+        <div class="container mx-auto px-4">
+            
+            <div class="max-w-2xl mx-auto text-center space-y-3 mb-12">
+                <span class="text-xs font-bold text-brand-red tracking-widest block uppercase font-mono">DAFIS INTERACTIVE CONTROLLER</span>
+                <h2 class="text-3xl md:text-4xl font-black text-white">حاسبة التقدير الأمني الفورية والمحاكاة</h2>
+                <div class="w-16 h-1 bg-brand-red mx-auto rounded-full"></div>
+                <p class="text-brand-textMuted text-xs md:text-sm">اضبط مواصفات الكاميرات والإنذارات وشاهد المخطط التفاعلي يتغير بالوقت الفعلي، ثم استكمل حقول الطلب بالأسفل.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start max-w-6xl mx-auto">
+                
+                <!-- Calculator inputs -->
+                <div class="lg:col-span-5 bg-brand-card border border-white/10 rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl">
+                    <h3 class="font-bold text-base text-white flex items-center gap-2">
+                        <i data-lucide="sliders" class="text-brand-red w-5 h-5"></i>
+                        تعديل مواصفات المنظومة
+                    </h3>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-brand-textMuted">نوع المنشأة</label>
+                        <select id="calc-facility" onchange="playClickSound(); calculateSecurityEstimate(); syncFacilityToForm();" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red focus:outline-none transition-colors">
+                            <option value="residential">منزل / فيلا سكنية فاخرة</option>
+                            <option value="clinic">عيادة طبية / مصحة صحية</option>
+                            <option value="retail">محل تجاري / سوبرماركت</option>
+                            <option value="industrial">مستودع لوجستي / مصنع</option>
+                            <option value="administrative">مقر إداري / مؤسسة عمومية</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-brand-textMuted">المساحة التقريبية للموقع (متر مربع)</label>
+                        <div class="flex items-center gap-4">
+                            <input type="range" id="calc-area-range" min="50" max="5000" step="50" value="200" oninput="updateAreaValue(this.value)" class="flex-grow accent-brand-red">
+                            <span id="calc-area-display" class="font-mono font-bold text-xs bg-brand-dark px-3 py-1.5 rounded border border-white/5 shrink-0 text-white">200 م²</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-brand-textMuted">عدد كاميرات المراقبة المطلوبة</label>
+                        <div class="flex items-center gap-3">
+                            <button onclick="playClickSound(); adjustCounter('calc-cameras', -1)" class="w-10 h-10 bg-brand-slateAccent hover:bg-brand-red text-white font-bold rounded-xl transition-all">-</button>
+                            <input type="number" id="calc-cameras" value="4" min="1" max="16" class="w-16 bg-brand-dark text-center font-bold font-mono text-sm border border-white/10 rounded-xl py-2 focus:border-brand-red focus:outline-none text-white" readonly>
+                            <button onclick="playClickSound(); adjustCounter('calc-cameras', 1)" class="w-10 h-10 bg-brand-slateAccent hover:bg-brand-red text-white font-bold rounded-xl transition-all">+</button>
+                            <span class="text-xs text-brand-textMuted">كاميرات IP</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-brand-textMuted">ماركة الكاميرات المعتمدة</label>
+                        <select id="calc-camera-brand" onchange="playClickSound(); calculateSecurityEstimate();" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red focus:outline-none transition-colors">
+                            <option value="Hikvision">Hikvision (كاميرات ذكية فائقة)</option>
+                            <option value="Dahua">Dahua Technology (تحليل ذكي متكامل)</option>
+                            <option value="Imou">Imou (مراقبة سحابية لاسلكية)</option>
+                            <option value="EZVIZ">EZVIZ (أنظمة ذكية مدمجة)</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-brand-textMuted">دقة وجودة الكاميرات</label>
+                        <select id="calc-camera-quality" onchange="playClickSound(); calculateSecurityEstimate();" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red focus:outline-none transition-colors">
+                            <option value="2MP FHD">2MP Full HD (رصد مالي وتفاصيل عادية)</option>
+                            <option value="4MP 2K">4MP 2K Quad HD (توازن ممتاز ورؤية ليلية ملونة)</option>
+                            <option value="8MP 4K">8MP 4K Ultra HD (قراءة ممتازة للوحات والوجوه)</option>
+                            <option value="12MP 8K">12MP 8K Extreme resolution (منشآت حساسة جداً)</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-brand-textMuted">نوع توصيل وتركيب الكاميرات</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center gap-2 bg-brand-dark px-4 py-3 rounded-xl border border-white/5 cursor-pointer hover:border-brand-red/30 transition-all">
+                                <input type="radio" name="calc-wire" value="سلكي (PoE/Coaxial)" checked onchange="playClickSound(); calculateSecurityEstimate();" class="accent-brand-red">
+                                <span class="text-xs text-white">سلكي (باسلاك)</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-brand-dark px-4 py-3 rounded-xl border border-white/5 cursor-pointer hover:border-brand-red/30 transition-all">
+                                <input type="radio" name="calc-wire" value="لاسلكي (Wi-Fi)" onchange="playClickSound(); calculateSecurityEstimate();" class="accent-brand-red">
+                                <span class="text-xs text-white">لاسلكي (بدون اسلاك)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-dark/50 border border-white/5 rounded-2xl p-4 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-white flex items-center gap-2">
+                                <i data-lucide="bell" class="text-brand-red w-4 h-4"></i>
+                                تفعيل نظام الإنذار ضد السرقة
+                            </label>
+                            <input type="checkbox" id="calc-alarm-toggle" onchange="playClickSound(); toggleAlarmBrandDisplay(); calculateSecurityEstimate();" class="w-4 h-4 text-brand-red accent-brand-red rounded cursor-pointer" checked>
+                        </div>
+                        
+                        <div id="alarm-brand-container" class="space-y-2">
+                            <label class="block text-[10px] font-bold text-brand-textMuted uppercase">اختر ماركة ونوع نظام الإنذار</label>
+                            <select id="calc-alarm-brand" onchange="playClickSound(); calculateSecurityEstimate();" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:border-brand-red focus:outline-none transition-colors">
+                                <option value="Ajax">Ajax (المعيار الأوروبي اللاسلكي الممتاز)</option>
+                                <option value="Dahua">Dahua (أنظمة إنذار ذكية مدمجة)</option>
+                                <option value="Hikvision">Hikvision (إنذار احترافي سلكي/لاسلكي)</option>
+                                <option value="Captor">Captor (نظام إنذار وحماية معتمد)</option>
+                                <option value="Tiger">Tiger (أنظمة أمنية مخصصة ذات جودة عالية)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between bg-brand-dark/40 px-4 py-3 rounded-xl border border-white/5">
+                        <label class="text-xs font-medium text-white flex items-center gap-2">
+                            <input type="checkbox" id="calc-access-toggle" onchange="playClickSound(); calculateSecurityEstimate();" class="w-4 h-4 text-brand-red accent-brand-red rounded cursor-pointer">
+                            إضافة نظام التحكم بالوصول بيومتري (ZKTeco)
+                        </label>
+                    </div>
+
+                </div>
+
+                <!-- Simulation Output -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <div class="bg-brand-card border border-white/10 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold text-brand-red flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-brand-red pulse-wave"></span>
+                                محاكاة حية ثنائية الأبعاد للمنشأة المخططة
+                            </span>
+                            <span id="blueprint-label" class="text-[10px] font-mono bg-brand-slateAccent text-white px-2.5 py-1 rounded">مخطط فيلا سكنية</span>
+                        </div>
+                        
+                        <div class="w-full h-64 bg-slate-950 border border-white/5 rounded-2xl relative flex items-center justify-center overflow-hidden">
+                            <div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(227,28,28,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(227,28,28,0.02)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none"></div>
+                            
+                            <div id="blueprint-layout-canvas" class="w-5/6 h-5/6 border border-brand-textMuted/20 rounded-xl relative transition-all duration-300">
+                                <!-- Generated Dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="mt-3 flex justify-between items-center text-[10px] text-brand-textMuted font-mono">
+                            <span>النقاط الحمراء: الكاميرات النيونيّة</span>
+                            <span>المنطقة الوسطى الوميضية: نظام الإنذار المختار</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-card border border-white/10 rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl">
+                        <div class="space-y-2">
+                            <span class="text-[10px] font-bold text-brand-red tracking-widest block uppercase font-mono">TECHNICAL PROPOSAL SUMMARY</span>
+                            <h4 id="calc-rec-title" class="font-black text-xl text-white">باقة الحماية المقترحة</h4>
+                            <div class="w-12 h-0.5 bg-brand-red rounded-full"></div>
+                        </div>
+
+                        <div class="space-y-3 text-xs leading-relaxed text-brand-textMuted" id="calc-rec-details">
+                            <!-- Generated Dynamically -->
+                        </div>
+
+                        <div class="bg-brand-dark/60 rounded-2xl p-4 border border-white/5 space-y-4">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-white">درجة التعقيد الأمني والشبكي للتركيب:</span>
+                                <span id="security-index" class="font-bold font-mono text-brand-red">85%</span>
+                            </div>
+                            <div class="w-full h-2 bg-brand-slateAccent rounded-full overflow-hidden">
+                                <div id="security-progress-bar" class="h-full bg-gradient-to-l from-brand-red to-rose-500 rounded-full transition-all duration-500" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- NEW: Dedicated Advanced Site Survey Booking Control Panel -->
+    <section id="survey-form" class="py-16 container mx-auto px-4 relative">
+        <div class="max-w-4xl mx-auto bg-gradient-to-b from-[#0a0f1d] to-[#12192e] border border-white/15 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-12 -left-12 w-40 h-40 bg-brand-red/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+            
+            <div class="space-y-4 mb-8 text-right border-b border-white/5 pb-6">
+                <span class="text-xs font-black text-brand-red tracking-widest block uppercase font-mono">DAFIS DISPATCH & SURVEY CONTROL</span>
+                <h2 class="text-3xl font-black text-white">بوابة حجز ومعاينة الموقع الرسمية بتبسة</h2>
+                <p class="text-brand-textMuted text-xs leading-relaxed">
+                    يرجى تدوين بياناتك وإرفاق تقديرات المنظومة المختارة أعلاه لتوليد ملف معاينة متكامل، وسيقوم نظامنا بتوجيهها مباشرة إلى الرقم الرسمي لخدمة العملاء <strong class="text-white">0659849656</strong> عبر واتساب.
+                </p>
+            </div>
+
+            <!-- Form layout -->
+            <form id="survey-booking-form" onsubmit="sendSurveyRequest(event)" class="space-y-6 text-right">
+                
+                <!-- Client Details Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Full Name -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-white flex items-center justify-start gap-1.5">
+                            <i data-lucide="user" class="text-brand-red w-4 h-4"></i>
+                            الاسم واللقب للعميل / المؤسسة *
+                        </label>
+                        <input type="text" id="form-client-name" required placeholder="أدخل اسمك بالكامل أو اسم الشركة" class="w-full bg-brand-dark/80 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:border-brand-red focus:outline-none transition-colors">
+                    </div>
+
+                    <!-- Client Phone -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-white flex items-center justify-start gap-1.5">
+                            <i data-lucide="phone" class="text-brand-red w-4 h-4"></i>
+                            رقم الهاتف الفعال للتواصل *
+                        </label>
+                        <input type="tel" id="form-client-phone" required placeholder="مثال: 0659849656" class="w-full bg-brand-dark/80 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white text-left font-mono focus:border-brand-red focus:outline-none transition-colors">
+                    </div>
+
+                </div>
+
+                <!-- Logistics Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Wilaya / Municipality -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-white flex items-center justify-start gap-1.5">
+                            <i data-lucide="map" class="text-brand-red w-4 h-4"></i>
+                            الولاية والبلدية / العنوان *
+                        </label>
+                        <input type="text" id="form-client-location" required placeholder="مثال: تبسة، وسط المدينة" class="w-full bg-brand-dark/80 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:border-brand-red focus:outline-none transition-colors">
+                    </div>
+
+                    <!-- Type of Facility synced -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-white flex items-center justify-start gap-1.5">
+                            <i data-lucide="building" class="text-brand-red w-4 h-4"></i>
+                            نوع المنشأة المحددة
+                        </label>
+                        <select id="form-facility-sync" class="w-full bg-brand-dark/80 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:border-brand-red focus:outline-none transition-colors">
+                            <option value="residential">منزل / فيلا سكنية فاخرة</option>
+                            <option value="clinic">عيادة طبية / مصحة صحية</option>
+                            <option value="retail">محل تجاري / سوبرماركت</option>
+                            <option value="industrial">مستودع لوجستي / مصنع</option>
+                            <option value="administrative">مقر إداري / مؤسسة عمومية</option>
+                        </select>
+                    </div>
+
+                    <!-- Preferred date of inspection -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-white flex items-center justify-start gap-1.5">
+                            <i data-lucide="calendar" class="text-brand-red w-4 h-4"></i>
+                            تاريخ المعاينة المفضل
+                        </label>
+                        <input type="date" id="form-preferred-date" class="w-full bg-brand-dark/80 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white text-left font-mono focus:border-brand-red focus:outline-none transition-colors">
+                    </div>
+
+                </div>
+
+                <!-- Description / Client Notes -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-white flex items-center justify-start gap-1.5">
+                        <i data-lucide="clipboard-list" class="text-brand-red w-4 h-4"></i>
+                        وصف المنشأة ومتطلبات حماية إضافية خاصة *
+                    </label>
+                    <textarea id="form-client-notes" required rows="4" placeholder="يرجى كتابة وصف تقريبي للمنشأة والواجهات والارتفاعات وأي تفاصيل ترغب في حمايتها لمنع الاختراق..." class="w-full bg-brand-dark/80 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:border-brand-red focus:outline-none transition-colors leading-relaxed"></textarea>
+                </div>
+
+                <!-- Dispatch button -->
+                <div class="pt-4 border-t border-white/5">
+                    <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl flex items-center justify-center gap-2.5 shadow-2xl shadow-emerald-950/30 transition-all transform hover:-translate-y-0.5">
+                        <i data-lucide="message-square" class="w-5 h-5"></i>
+                        إرسال ملف طلب المعاينة الفوري عبر واتساب
+                    </button>
+                    <span class="block text-center text-[10px] text-brand-textMuted mt-3 font-mono">الرقم المعتمد للاستلام المباشر لدافيس سوليوشنز: 0659849656</span>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+    <!-- Methodology Summary -->
+    <section class="py-16 bg-brand-dark/30 border-b border-white/5">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto text-center space-y-3 mb-12">
+                <span class="text-xs font-bold text-brand-red tracking-widest block uppercase">منهجية هندسية صارمة ومطابقة للمعايير</span>
+                <h2 class="text-3xl md:text-4xl font-black text-white">منهجية إدارة وتنفيذ المشاريع الهندسية</h2>
+                <div class="w-16 h-1 bg-brand-red mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-5xl mx-auto">
+                <div class="bg-brand-card border border-white/5 rounded-2xl p-5 text-right space-y-3">
+                    <span class="block text-2xl font-black text-brand-red">01</span>
+                    <h4 class="font-bold text-sm text-white">المعايير والمسح الميداني</h4>
+                    <p class="text-[11px] text-brand-textMuted leading-relaxed">دراسة جغرافية وتقنية شاملة للموقع لتقييم المخاطر وتحديد الثغرات بدقة.</p>
+                </div>
+                <div class="bg-brand-card border border-white/5 rounded-2xl p-5 text-right space-y-3">
+                    <span class="block text-2xl font-black text-brand-red">02</span>
+                    <h4 class="font-bold text-sm text-white">التصميم الهندسي</h4>
+                    <p class="text-[11px] text-brand-textMuted leading-relaxed">تقديم مخططات تنفيذية دقيقة (AutoCAD) توضح مواقع الأجهزة وزوايا الرؤية.</p>
+                </div>
+                <div class="bg-brand-card border border-white/5 rounded-2xl p-5 text-right space-y-3">
+                    <span class="block text-2xl font-black text-brand-red">03</span>
+                    <h4 class="font-bold text-sm text-white">التنفيذ والمطابقة</h4>
+                    <p class="text-[11px] text-brand-textMuted leading-relaxed">تركيب الكابلات والأنظمة ومسارات القنوات والمواسير بأعلى دقة وجمالية.</p>
+                </div>
+                <div class="bg-brand-card border border-white/5 rounded-2xl p-5 text-right space-y-3">
+                    <span class="block text-2xl font-black text-brand-red">04</span>
+                    <h4 class="font-bold text-sm text-white">الفحص والتشغيل</h4>
+                    <p class="text-[11px] text-brand-textMuted leading-relaxed">محاكاة سيناريوهات الاختراق، وتأمين الأجهزة والشبكات ضد الهجمات الإلكترونية.</p>
+                </div>
+                <div class="bg-brand-card border border-white/5 rounded-2xl p-5 text-right space-y-3">
+                    <span class="block text-2xl font-black text-brand-red">05</span>
+                    <h4 class="font-bold text-sm text-white">التسليم والتدريب</h4>
+                    <p class="text-[11px] text-brand-textMuted leading-relaxed">تسليم الأنظمة في حالتها القصوى وتدريب طاقم المشغلين والمسؤولين.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Portfolio - Static & Detailed from original PDF with popup support -->
+    <section id="portfolio" class="py-16 container mx-auto px-4">
+        <div class="max-w-2xl mx-auto text-center space-y-3 mb-12">
+            <span class="text-xs font-bold text-brand-red tracking-widest block uppercase">سجل المخططات الهندسية والمشاريع المنفذة</span>
+            <h2 class="text-3xl md:text-4xl font-black text-white">نماذج من المشاريع والأعمال المنجزة</h2>
+            <div class="w-16 h-1 bg-brand-red mx-auto rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Project Cards 1 to 6 mapped from authentic PDF layouts -->
+            <div class="bg-brand-card border border-white/5 rounded-2xl overflow-hidden flex flex-col">
+                <div class="h-44 relative bg-slate-900 flex items-center justify-center">
+                    <i data-lucide="home" class="w-14 h-14 text-brand-red opacity-30 animate-pulse"></i>
+                    <span class="absolute top-4 right-4 bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded">المشروع #1</span>
+                </div>
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <h3 class="font-black text-base text-white">تأمين محيطي ومرئي متكامل لمركب سكني وترفيهي فاخر</h3>
+                    <p class="text-xs text-brand-textMuted leading-relaxed line-clamp-3">إنشاء منظومة مراقبة دائرية شاملة لحماية المحيط الخارجي وتأمين مناطق المسبح والحدائق بنمط PoE المتكامل ودون نقاط عمياء.</p>
+                    <button onclick="openProjectModal(1)" class="w-full py-2.5 bg-brand-slateAccent hover:bg-brand-red text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1">
+                        عرض المخطط الهندسي
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-brand-card border border-white/5 rounded-2xl overflow-hidden flex flex-col">
+                <div class="h-44 relative bg-slate-900 flex items-center justify-center">
+                    <i data-lucide="building-2" class="w-14 h-14 text-brand-red opacity-30"></i>
+                    <span class="absolute top-4 right-4 bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded">المشروع #2</span>
+                </div>
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <h3 class="font-black text-base text-white">منظومة المراقبة التلفزيونية والأمن الذكي للمجمعات المغلقة</h3>
+                    <p class="text-xs text-brand-textMuted leading-relaxed line-clamp-3">تأمين الممرات الحيوية، مواقف السيارات الأرضية والسطحية، ومداخل البنايات السكنية بميزة التوجيه العكسي المتعاكس.</p>
+                    <button onclick="openProjectModal(2)" class="w-full py-2.5 bg-brand-slateAccent hover:bg-brand-red text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1">
+                        عرض المخطط الهندسي
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-brand-card border border-white/5 rounded-2xl overflow-hidden flex flex-col">
+                <div class="h-44 relative bg-slate-900 flex items-center justify-center">
+                    <i data-lucide="hospital" class="w-14 h-14 text-brand-red opacity-30"></i>
+                    <span class="absolute top-4 right-4 bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded">المشروع #3</span>
+                </div>
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <h3 class="font-black text-base text-white">المنظومة الأمنية المتكاملة لعيادة جراحة وأمراض الأنف والأذن</h3>
+                    <p class="text-xs text-brand-textMuted leading-relaxed line-clamp-3">تأمين محيط وممرات عيادة Clinique O.R.L بالكامل مع حماية خصوصية العيادات والتحكم وتوثيق لوحات السيارات بدقة.</p>
+                    <button onclick="openProjectModal(3)" class="w-full py-2.5 bg-brand-slateAccent hover:bg-brand-red text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1">
+                        عرض المخطط الهندسي
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-brand-card border border-white/5 rounded-2xl overflow-hidden flex flex-col">
+                <div class="h-44 relative bg-slate-900 flex items-center justify-center">
+                    <i data-lucide="store" class="w-14 h-14 text-brand-red opacity-30"></i>
+                    <span class="absolute top-4 right-4 bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded">المشروع #4</span>
+                </div>
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <h3 class="font-black text-base text-white">المنظومة الأمنية للمحلات والمجمعات التجارية الكبرى</h3>
+                    <p class="text-xs text-brand-textMuted leading-relaxed line-clamp-3">الحد من السرقات وخسائر الممرات وتأمين تداول الأموال عند كاشير ومكاتب الدفع POS برصد مركزي وحسابات دقيقة.</p>
+                    <button onclick="openProjectModal(4)" class="w-full py-2.5 bg-brand-slateAccent hover:bg-brand-red text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1">
+                        عرض المخطط الهندسي
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-brand-card border border-white/5 rounded-2xl overflow-hidden flex flex-col">
+                <div class="h-44 relative bg-slate-900 flex items-center justify-center">
+                    <i data-lucide="landmark" class="w-14 h-14 text-brand-red opacity-30"></i>
+                    <span class="absolute top-4 right-4 bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded">المشروع #5</span>
+                </div>
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <h3 class="font-black text-base text-white">تأمين مقر الرابطة الولائية لكرة القدم بتبسة</h3>
+                    <p class="text-xs text-brand-textMuted leading-relaxed line-clamp-3">تأمين المقر الإداري بالكامل، وحماية الوثائق الإدارية والملفات الحيوية مع دمج نظام إنذار لاسلكي متطور من شركة Ajax.</p>
+                    <button onclick="openProjectModal(5)" class="w-full py-2.5 bg-brand-slateAccent hover:bg-brand-red text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1">
+                        عرض المخطط الهندسي
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-brand-card border border-white/5 rounded-2xl overflow-hidden flex flex-col">
+                <div class="h-44 relative bg-slate-900 flex items-center justify-center">
+                    <i data-lucide="fuel" class="w-14 h-14 text-brand-red opacity-30"></i>
+                    <span class="absolute top-4 right-4 bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded">المشروع #6</span>
+                </div>
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <h3 class="font-black text-base text-white">المنظومة الأمنية الشاملة لمحطات الوقود والمجمعات الخدمية</h3>
+                    <p class="text-xs text-brand-textMuted leading-relaxed line-clamp-3">تجاوز تحديات الارتفاع وتأمين منصات الضخ بالكامل لصالح Naftal مع تتبع وقراءة لوحات السيارات بدقة عالية.</p>
+                    <button onclick="openProjectModal(6)" class="w-full py-2.5 bg-brand-slateAccent hover:bg-brand-red text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1">
+                        عرض المخطط الهندسي
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating AI Security Assistant Widget -->
+    <div id="ai-chat-container" class="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-none">
+        
+        <!-- Chatbox window -->
+        <div id="ai-chatbox" class="hidden pointer-events-auto bg-brand-card border border-white/10 rounded-2xl shadow-2xl w-80 md:w-96 h-[460px] flex flex-col overflow-hidden mb-4 transition-all duration-300 scale-95 opacity-0 origin-bottom-right">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-brand-red to-rose-600 p-4 text-white flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center font-bold">D</div>
+                    <div>
+                        <h4 class="font-black text-sm">Dafis Command AI</h4>
+                        <span class="block text-[8px] opacity-80 uppercase tracking-widest font-bold">مستشارك الأمني الفوري</span>
+                    </div>
+                </div>
+                <button onclick="toggleAiChat()" class="p-1 text-white hover:opacity-80 transition-opacity">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Message area -->
+            <div id="ai-messages" class="flex-grow overflow-y-auto p-4 space-y-4 bg-slate-950/40 text-xs">
+                <!-- Welcome Message -->
+                <div class="flex gap-2.5 items-start">
+                    <div class="w-6 h-6 rounded bg-brand-red text-white flex items-center justify-center font-bold shrink-0">D</div>
+                    <div class="bg-brand-card p-3 rounded-2xl border border-white/5 text-right max-w-[80%] text-white leading-relaxed">
+                        مرحباً بك في لوحة تحكم دافيس AI. <br>
+                        كيف يمكنني خدمتك اليوم بخصوص أنظمتنا الأمنية؟ <br>
+                        سواء كنت تستفسر عن **أنظمة إنذار Ajax**، أو دقة الكاميرات وماركاتها المختلفة، يسعدني الإجابة ومساعدتك لحساب السعر.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick prompts selection chips -->
+            <div class="p-2 border-t border-white/5 bg-brand-slateAccent/30 flex gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-none shrink-0">
+                <button onclick="sendQuickPrompt('ما هي مميزات نظام Ajax مقارنة بـ Captor أو Tiger؟')" class="px-2.5 py-1 bg-brand-card hover:bg-brand-slateAccent text-[10px] text-brand-textMuted rounded-full transition-colors border border-white/5 font-bold">مقارنة أنظمة الإنذار</button>
+                <button onclick="sendQuickPrompt('كيف تختار دقة الكاميرات المناسبة لمنشأة تجارية؟')" class="px-2.5 py-1 bg-brand-card hover:bg-brand-slateAccent text-[10px] text-brand-textMuted rounded-full transition-colors border border-white/5 font-bold">اختيار دقة الكاميرا</button>
+                <button onclick="sendQuickPrompt('هل تنصحون بالكاميرات السلكية PoE أو اللاسلكية؟')" class="px-2.5 py-1 bg-brand-card hover:bg-brand-slateAccent text-[10px] text-brand-textMuted rounded-full transition-colors border border-white/5 font-bold">سلكي أم لاسلكي؟</button>
+            </div>
+            
+            <!-- Input area -->
+            <div class="p-3 bg-brand-card border-t border-white/10 shrink-0">
+                <form id="ai-chat-form" onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                    <input type="text" id="ai-chat-input" placeholder="اكتب سؤالك التقني هنا..." class="flex-grow bg-brand-dark text-xs text-white border border-white/10 rounded-xl px-3 py-2.5 focus:border-brand-red focus:outline-none transition-colors" required>
+                    <button type="submit" class="p-2.5 bg-brand-red hover:bg-brand-redHover text-white rounded-xl transition-colors">
+                        <i data-lucide="send" class="w-4 h-4 transform rotate-180"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Float button trigger -->
+        <button onclick="toggleAiChat()" class="pointer-events-auto w-14 h-14 bg-brand-red hover:bg-brand-redHover text-white rounded-full flex items-center justify-center shadow-2xl shadow-brand-red/40 hover:scale-105 transition-all">
+            <i data-lucide="bot" id="ai-trigger-icon" class="w-7 h-7 animate-pulse"></i>
+        </button>
+    </div>
+
+    <!-- Project details modal -->
+    <div id="project-modal" class="fixed inset-0 z-50 bg-brand-dark/90 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-brand-card border border-white/10 rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl p-6 relative animate-fadeIn" id="project-modal-content">
+            <!-- Dynamic popup content injected via JS -->
+        </div>
+    </div>
+
+    <!-- Contact section -->
+    <section id="contact" class="py-16 border-t border-white/5">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto text-center space-y-3 mb-12">
+                <span class="text-xs font-bold text-brand-red tracking-widest block uppercase">جاهزون للمعاينة وتأمين المواقع فورياً</span>
+                <h2 class="text-3xl md:text-4xl font-black text-white">اتصل بنا وابدأ حماية أصولك</h2>
+                <div class="w-16 h-1 bg-brand-red mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto">
+                <div class="bg-brand-card border border-white/5 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-brand-red/10 flex items-center justify-center text-brand-red">
+                            <i data-lucide="phone" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-white">الخطوط الهاتفية</h3>
+                        <p class="text-xs text-brand-textMuted">اتصل مباشرة بالطاقم التنفيذي لجدولة معاينة ميدانية مجانية.</p>
+                    </div>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold text-brand-textMuted">المدير التنفيذي:</span>
+                            <a href="tel:0659849656" class="font-mono font-bold text-white hover:text-brand-red transition-colors">0659849656</a>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold text-brand-textMuted">المدير العام:</span>
+                            <a href="tel:0795983337" class="font-mono font-bold text-white hover:text-brand-red transition-colors">0795983337</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-card border border-white/5 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-brand-red/10 flex items-center justify-center text-brand-red">
+                            <i data-lucide="map-pin" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-white">المقر والموقع الجغرافي</h3>
+                        <p class="text-xs text-brand-textMuted">يسعدنا استقبالكم لدراسة دفاتر الشروط والمخططات الهندسية بالمكتب.</p>
+                    </div>
+                    <div class="pt-4 border-t border-white/5 text-xs text-white leading-relaxed">
+                        حي واد الناقص، المحل رقم 01، الطابق الأرضي، بلدية تبسة، ولاية تبسة، الجزائر.
+                    </div>
+                </div>
+
+                <div class="bg-brand-card border border-white/5 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-brand-red/10 flex items-center justify-center text-brand-red">
+                            <i data-lucide="mail" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-white">المراسلات والبريد</h3>
+                        <p class="text-xs text-brand-textMuted">راسلنا إلكترونياً لإرسال مخططات الأوتوكاد وعروض المناقصات.</p>
+                    </div>
+                    <div class="pt-4 border-t border-white/5 text-xs text-white">
+                        <a href="mailto:contact.dafisolutions@gmail.com" class="font-bold hover:text-brand-red transition-colors">contact.dafisolutions@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark py-12 border-t border-white/5 text-xs text-brand-textMuted">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-brand-red w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white">
+                        <i data-lucide="shield" class="w-4.5 h-4.5"></i>
+                    </div>
+                    <span class="text-base font-black tracking-wider text-white">DAFIS SOLUTIONS</span>
+                </div>
+                <p>مؤسسة جزائرية معتمدة ورائدة في هندسة وحماية البنيات التحتية الحساسة والتجهيزات الاستراتيجية من المستوى ج بتبسة والولايات المجاورة.</p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="font-bold text-sm text-white">أنظمة وشركاء</h4>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <span>Hikvision IP Systems</span>
+                    <span>Dahua AI Logic</span>
+                    <span>Ajax Intruder Alarm</span>
+                    <span>ZKTeco Biometrics</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <h4 class="font-bold text-sm text-white">إخلاء المسؤولية القانونية</h4>
+                <p>كافة التجهيزات الحساسة المنصبة تخضع لبروتوكولات الترخيص المسبق والمطابقة الأمنية السيبرانية والفيزيائية للجمهورية الجزائرية الديمقراطية الشعبية.</p>
+                <p class="font-mono text-[10px] text-white pt-2">© 2026 DAFIS SOLUTIONS. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Audio & Interactive Simulation Logic -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('Service Worker registered:', reg.scope))
-            .catch(err => console.log('Service Worker registration failed:', err));
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // Audio synthesizer via Web Audio API
+        let audioCtx;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playClickSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } catch (e) {}
+        }
+
+        function playSuccessSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(700, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.1);
+                
+                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.25);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.25);
+            } catch (e) {}
+        }
+
+        // Toggle Mobile Menu Drawer
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
-      }
+
+        // Close mobile drawer on item click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // PWA installer variables
+        let deferredPrompt;
+        const installBanner = document.getElementById('install-banner');
+        const btnInstall = document.getElementById('btn-install-pwa');
+        const btnCloseInstall = document.getElementById('btn-close-install');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.classList.remove('hidden');
+        });
+
+        btnInstall.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                showToast('شكرًا لتثبيتك تطبيق دافيس بتبسة!');
+            }
+            deferredPrompt = null;
+            installBanner.classList.add('hidden');
+        });
+
+        btnCloseInstall.addEventListener('click', () => {
+            installBanner.classList.add('hidden');
+        });
+
+        function triggerPwaInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+            } else {
+                showToast('تطبيق دافيس سوليوشنز جاهز كأيقونة مستقلة على هاتفك!');
+            }
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "bg-brand-card border-l-4 border-brand-red text-white text-xs font-bold px-4 py-3 rounded-lg shadow-2xl flex items-center justify-between gap-3 pointer-events-auto transform transition-all duration-300 translate-x-[-100%]";
+            toast.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" class="text-brand-textMuted hover:text-white"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => toast.classList.remove('translate-x-[-100%]'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-x-[-100%]');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // Toggle brand selection display for alarm checkboxes
+        function toggleAlarmBrandDisplay() {
+            const isChecked = document.getElementById('calc-alarm-toggle').checked;
+            const container = document.getElementById('alarm-brand-container');
+            if (isChecked) {
+                container.style.opacity = '1';
+                container.style.pointerEvents = 'auto';
+            } else {
+                container.style.opacity = '0.3';
+                container.style.pointerEvents = 'none';
+            }
+        }
+
+        // Adjust Counter value
+        function adjustCounter(id, delta) {
+            const input = document.getElementById(id);
+            let val = parseInt(input.value) + delta;
+            if (val < parseInt(input.min)) val = parseInt(input.min);
+            if (val > parseInt(input.max)) val = parseInt(input.max);
+            input.value = val;
+            calculateSecurityEstimate();
+        }
+
+        function updateAreaValue(val) {
+            document.getElementById('calc-area-display').innerText = val + " م²";
+            calculateSecurityEstimate();
+        }
+
+        // Synchronize selected facility type with booking form
+        function syncFacilityToForm() {
+            const syncVal = document.getElementById('calc-facility').value;
+            document.getElementById('form-facility-sync').value = syncVal;
+        }
+
+        // ----------------------------------------------------
+        // Dynamic Estimator & 2D blueprint simulator engine
+        // ----------------------------------------------------
+        function calculateSecurityEstimate() {
+            const facility = document.getElementById('calc-facility').value;
+            const area = parseInt(document.getElementById('calc-area-range').value);
+            const cameras = parseInt(document.getElementById('calc-cameras').value);
+            const cameraBrand = document.getElementById('calc-camera-brand').value;
+            const cameraQuality = document.getElementById('calc-camera-quality').value;
+            const wireType = document.querySelector('input[name="calc-wire"]:checked').value;
+            
+            const isAlarmEnabled = document.getElementById('calc-alarm-toggle').checked;
+            const alarmBrand = document.getElementById('calc-alarm-brand').value;
+            
+            const isAccessEnabled = document.getElementById('calc-access-toggle').checked;
+
+            const titleEl = document.getElementById('calc-rec-title');
+            const detailsEl = document.getElementById('calc-rec-details');
+            const labelEl = document.getElementById('blueprint-label');
+
+            let recTitle = "";
+            let recDetails = "";
+
+            // Complexity calculation logic
+            let complexity = 20 + (cameras * 4);
+            if (area > 1000) complexity += 15;
+            if (isAlarmEnabled) complexity += 15;
+            if (isAccessEnabled) complexity += 15;
+            if (wireType.includes('سلكي')) complexity += 10;
+            if (complexity > 100) complexity = 100;
+
+            document.getElementById('security-index').innerText = complexity + "%";
+            document.getElementById('security-progress-bar').style.width = complexity + "%";
+
+            // Generating blueprint layout
+            generateBlueprintLayout(facility, cameras, isAlarmEnabled);
+
+            if (facility === 'residential') {
+                labelEl.innerText = "مخطط فيلا سكنية فاخرة";
+                recTitle = `منظومة حماية مركب سكني فاخر (المساحة: ${area}م²)`;
+                recDetails = `
+                    • عدد <strong>${cameras} كاميرات مراقبة IP</strong> ماركة <strong>${cameraBrand}</strong> بدقة فائقة ومتقاطعة <strong>${cameraQuality}</strong>. <br>
+                    • نوع تركيب وتوصيل الكاميرات: <strong>${wireType}</strong> المدمج مع ديكورات الإقامة. <br>
+                    ${isAlarmEnabled ? `• دمج <strong>نظام الإنذار ضد السرقة والتشويش (${alarmBrand})</strong> المخصص لحماية الأبواب والنوافذ والأسوار الخارجية.` : '• لم يتم تفعيل نظام الإنذار ضد السرقة (ينصح به لحماية المحيط).'} <br>
+                    ${isAccessEnabled ? '• دمج نظام تحكم بيومتري ذكي للتحقق من هوية الزوار عند المدخل أو بوابة السيارات.' : ''}
+                `;
+            } else if (facility === 'clinic') {
+                labelEl.innerText = "مخطط عيادة ومرفق صحي";
+                recTitle = `تأمين عيادة ومرفق صحي متكامل (المساحة: ${area}م²)`;
+                recDetails = `
+                    • عدد <strong>${cameras} كاميرات مراقبة IP</strong> طراز Dome من الماركة المعتمدة <strong>${cameraBrand}</strong> بدقة <strong>${cameraQuality}</strong>. <br>
+                    • تركيب الكاميرات بنمط <strong>${wireType}</strong> على طول ممرات الكشف، غرف الانتظار، السلالم ومواقف السيارات. <br>
+                    ${isAlarmEnabled ? `• تفعيل <strong>نظام الحماية من الاقتحام والسرقة (${alarmBrand})</strong> لتأمين مخازن الأدوية والمستلزمات الحساسة.` : ''} <br>
+                    ${isAccessEnabled ? '• تركيب جهاز للتحكم بالوصول بالتعرف على بصمة الوجه (ZKTeco) لتنظيم فضاء الموظفين والأقسام الطبية.' : ''}
+                `;
+            } else if (facility === 'retail') {
+                labelEl.innerText = "مخطط مركز ومحل تجاري";
+                recTitle = `تأمين سوبرماركت ومساحة تجارية كبرى (المساحة: ${area}م²)`;
+                recDetails = `
+                    • عدد <strong>${cameras} كاميرات مراقبة IP عريضة الزوايا</strong> ماركة <strong>${cameraBrand}</strong> بدقة <strong>${cameraQuality}</strong>. <br>
+                    • نوع تمديد كابلات الكاميرات: <strong>${wireType}</strong> المقاوم للتشويش والقطع المتعمد. <br>
+                    • دمج وتركيز كاميرا مراقبة مخصصة بدقة فائقة مباشرة فوق كاونتر نقاط البيع والفوترة POS. <br>
+                    ${isAlarmEnabled ? `• دمج <strong>نظام الإنذار المركزي ضد السرقة (${alarmBrand})</strong> لحماية مكاتب الخزينة ومداخل المحل الخلفية.` : ''} <br>
+                    ${isAccessEnabled ? '• دمج جهاز التحكم بالعبور بيومترياً لمكاتب التسيير والمخزن التجاري.' : ''}
+                `;
+            } else if (facility === 'industrial') {
+                labelEl.innerText = "مخطط مستودع لوجستي / مصنع";
+                recTitle = `منظومة تأمين مستودع صناعي ولوجستي كبير (المساحة: ${area}م²)`;
+                recDetails = `
+                    • عدد <strong>${cameras} كاميرات IP Bullet خارجية متينة</strong> مقاومة للغبار والظروف القاسية ماركة <strong>${cameraBrand}</strong> بدقة <strong>${cameraQuality}</strong>. <br>
+                    • حماية توصيلات الشبكة ببروتوكول تمديد <strong>${wireType}</strong> المعزول كلياً داخل قنوات صلبة. <br>
+                    ${isAlarmEnabled ? `• تفعيل <strong>نظام الإنذار وتأمين الأسوار المحيطية الطويلة (${alarmBrand})</strong> بمستشعرات كشف الحركة اللاسلكية الاستباقية.` : ''} <br>
+                    ${isAccessEnabled ? '• بوابات دوارة بيومترية (Turnstiles) عند مدخل المصنع لحصر حضور وانصراف الطاقم العمالي.' : ''}
+                `;
+            } else {
+                labelEl.innerText = "مخطط مقر إداري / مؤسسة";
+                recTitle = `تأمين مبنى إداري ومقر مؤسسة عمومية (المساحة: ${area}م²)`;
+                recDetails = `
+                    • عدد <strong>${cameras} كاميرات مراقبة IP مدمجة</strong> داخل علب حماية معدنية مقاومة للتخريب ماركة <strong>${cameraBrand}</strong> بدقة <strong>${cameraQuality}</strong>. <br>
+                    • نوع توصيل الكابلات: <strong>${wireType}</strong> مع تجميع الكابلات داخل Rack مركزي مغلق بمفاتيح أمان. <br>
+                    ${isAlarmEnabled ? `• دمج <strong>نظام حماية وسرية المستندات والأرشيف من السرقة (${alarmBrand})</strong> بمستشعرات اهتزاز كاشفة.` : ''} <br>
+                    ${isAccessEnabled ? '• نظام تحكم بالدخول مركزي (ZKTeco) للتعرف على وجوه الموظفين والزوار وتوليد تقارير.' : ''}
+                `;
+            }
+
+            titleEl.innerText = recTitle;
+            detailsEl.innerHTML = recDetails;
+        }
+
+        // Generating blueprint layout
+        function generateBlueprintLayout(facility, cameraCount, isAlarmEnabled) {
+            const container = document.getElementById('blueprint-layout-canvas');
+            container.innerHTML = "";
+
+            let innerRooms = "";
+            if (facility === 'residential') {
+                innerRooms = `
+                    <div class="absolute inset-0 border border-brand-red/10 rounded-xl"></div>
+                    <div class="absolute top-0 left-0 w-1/2 h-1/2 border-b border-l border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">صالون</div>
+                    <div class="absolute top-0 right-0 w-1/2 h-1/2 border-b border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">مطبخ</div>
+                    <div class="absolute bottom-0 left-0 w-full h-1/2 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">غرفة المعيشة والحديقة</div>
+                `;
+            } else if (facility === 'clinic') {
+                innerRooms = `
+                    <div class="absolute inset-0 border border-brand-red/10 rounded-xl"></div>
+                    <div class="absolute top-0 left-0 w-1/3 h-full border-l border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">عيادة 1</div>
+                    <div class="absolute top-0 left-1/3 w-1/3 h-full border-l border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">قاعة الانتظار</div>
+                    <div class="absolute top-0 right-0 w-1/3 h-full flex items-center justify-center text-[8px] text-brand-textMuted font-bold">الاستقبال</div>
+                `;
+            } else if (facility === 'retail') {
+                innerRooms = `
+                    <div class="absolute inset-0 border border-brand-red/10 rounded-xl"></div>
+                    <div class="absolute top-0 left-0 w-full h-1/3 border-b border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">جناح الرفوف الكبرى</div>
+                    <div class="absolute bottom-0 left-0 w-1/2 h-2/3 border-l border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">المخزن الخلفي</div>
+                    <div class="absolute bottom-0 right-0 w-1/2 h-2/3 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">نقاط الدفع POS</div>
+                `;
+            } else if (facility === 'industrial') {
+                innerRooms = `
+                    <div class="absolute inset-0 border border-brand-red/10 rounded-xl"></div>
+                    <div class="absolute top-0 left-0 w-3/4 h-full border-l border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">منطقة شحن وتفريغ السلع</div>
+                    <div class="absolute top-0 right-0 w-1/4 h-full flex items-center justify-center text-[8px] text-brand-textMuted font-bold">الإدارة</div>
+                `;
+            } else {
+                innerRooms = `
+                    <div class="absolute inset-0 border border-brand-red/10 rounded-xl"></div>
+                    <div class="absolute top-0 left-0 w-1/2 h-full border-l border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">مكتب المدير والاجتماعات</div>
+                    <div class="absolute top-0 right-0 w-1/2 h-1/2 border-b border-brand-textMuted/10 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">الأرشيف الحساس</div>
+                    <div class="absolute bottom-0 right-0 w-1/2 h-1/2 flex items-center justify-center text-[8px] text-brand-textMuted font-bold">المكاتب الإدارية</div>
+                `;
+            }
+
+            container.innerHTML = innerRooms;
+
+            // Positioning blinking red camera indicators
+            const cameraPositions = [
+                { top: '5%', left: '5%' },
+                { bottom: '5%', right: '5%' },
+                { top: '5%', right: '5%' },
+                { bottom: '5%', left: '5%' },
+                { top: '48%', left: '10%' },
+                { top: '48%', right: '10%' },
+                { top: '10%', left: '48%' },
+                { bottom: '10%', left: '48%' },
+                { top: '25%', left: '25%' },
+                { bottom: '25%', right: '25%' },
+                { top: '25%', right: '25%' },
+                { bottom: '25%', left: '25%' },
+                { top: '45%', left: '45%' },
+                { top: '12%', left: '12%' },
+                { bottom: '12%', right: '12%' },
+                { top: '80%', left: '20%' }
+            ];
+
+            const limit = Math.min(cameraCount, cameraPositions.length);
+            for (let i = 0; i < limit; i++) {
+                const pos = cameraPositions[i];
+                const dot = document.createElement('div');
+                dot.className = "absolute w-3 h-3 bg-brand-red rounded-full flex items-center justify-center z-10 shadow-lg shadow-brand-red/50";
+                dot.style.top = pos.top;
+                dot.style.left = pos.left;
+                
+                dot.innerHTML = `
+                    <span class="absolute inline-flex h-full w-full rounded-full bg-brand-red opacity-75 pulse-wave"></span>
+                    <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+                `;
+                container.appendChild(dot);
+            }
+
+            // Central alarm hub visual
+            if (isAlarmEnabled) {
+                const siren = document.createElement('div');
+                siren.className = "absolute top-[45%] left-[45%] w-7 h-7 bg-amber-500 rounded-full flex items-center justify-center z-20 shadow-lg shadow-amber-500/40 border border-white/10";
+                siren.innerHTML = `
+                    <span class="absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75 pulse-wave"></span>
+                    <i data-lucide="bell" class="w-3.5 h-3.5 text-white"></i>
+                `;
+                container.appendChild(siren);
+                lucide.createIcons();
+            }
+        }
+
+        // ----------------------------------------------------
+        // BOOKING FORM AND WHATSAPP TRANSMISSION
+        // ----------------------------------------------------
+        function sendSurveyRequest(event) {
+            event.preventDefault();
+            playSuccessSound();
+
+            const name = document.getElementById('form-client-name').value.trim();
+            const phone = document.getElementById('form-client-phone').value.trim();
+            const location = document.getElementById('form-client-location').value.trim();
+            const facility = document.getElementById('form-facility-sync').selectedOptions[0].text;
+            const preferredDate = document.getElementById('form-preferred-date').value || "غير محدد";
+            const notes = document.getElementById('form-client-notes').value.trim();
+
+            // Fetch current technical configuration parameters from estimator
+            const cameras = document.getElementById('calc-cameras').value;
+            const cameraBrand = document.getElementById('calc-camera-brand').value;
+            const cameraQuality = document.getElementById('calc-camera-quality').value;
+            const wireType = document.querySelector('input[name="calc-wire"]:checked').value;
+            const isAlarmEnabled = document.getElementById('calc-alarm-toggle').checked;
+            const alarmBrand = document.getElementById('calc-alarm-brand').value;
+            const isAccessEnabled = document.getElementById('calc-access-toggle').checked;
+
+            // Constructing a beautifully formatted, structured, professional WhatsApp message payload
+            const formattedMessage = `🚨 *طلب معاينة ودراسة هندسية أمنية - Dafis Solutions* 🚨
+
+👤 *بيانات العميل والموقع:*
+• *الاسم واللقب:* ${name}
+• *رقم الهاتف:* ${phone}
+• *الموقع / العنوان:* ${location}
+• *نوع المنشأة:* ${facility}
+• *التاريخ المفضل للزيارة:* ${preferredDate}
+
+⚙️ *المواصفات الفنية المطلوبة مبدئياً:*
+• *كاميرات المراقبة:* ${cameras} كاميرات IP
+• *الماركة المختارة:* ${cameraBrand}
+• *الدقة والجودة:* ${cameraQuality}
+• *نمط التوصيل:* ${wireType}
+• *نظام الإنذار ضد السرقة:* ${isAlarmEnabled ? `نعم (${alarmBrand})` : "لا"}
+• *التحكم بالوصول البيومتري (ZKTeco):* ${isAccessEnabled ? "نعم" : "لا"}
+
+📝 *وصف المنشأة والمتطلبات الخاصة:*
+"${notes}"
+
+⚠️ *ملاحظة:* تم توليد هذا الطلب رسمياً عبر البوابة الرقمية لـ Dafis Solutions. يرجى مراجعة المخطط وحجز الموعد.`;
+
+            // WhatsApp link redirection directly to 0659849656
+            const whatsappUrl = `https://wa.me/213659849656?text=${encodeURIComponent(formattedMessage)}`;
+            window.open(whatsappUrl, '_blank');
+            showToast('تم تصدير وتجهيز ملف المعاينة وتوجيهه للواتساب بنجاح!');
+        }
+
+        // Project Database modal rendering
+        const projectsData = {
+            1: {
+                title: "المشروع رقم #1: تأمين مركب سكني وترفيهي فاخر بتبسة",
+                objective: "إنشاء منظومة مراقبة دائرية شاملة لحماية المحيط الخارجي وتأمين مناطق المسبح والحدائق بنمط PoE المتكامل ودون نقاط عمياء.",
+                techDetails: `
+                    <strong>المنطقة المجهزة:</strong> <br>
+                    • كاميرات Hikvision Bullet شبكية عالية الدقة معززة بمعايير حماية IP67 لمقاومة الرياح ومياه المسبح والأمطار. <br>
+                    • دمج علب تفريع RJ45 خلف الكاميرات مباشرة لحمايتها كلياً. <br>
+                    • تغطية الأسوار الطولية للحدود النباتية وتفعيل خاصية كشف عبور الخط الافتراضي (Line Crossing) للإنذار المبكر قبل الاختراق.
+                `
+            },
+            2: {
+                title: "المشروع رقم #2: منظومة المراقبة والأمن للمجمعات السكنية المغلقة",
+                objective: "تأمين الممرات الحيوية ومواقف السيارات الأرضية والسطحية لحفظ ممتلكات الإقامة بتبسة على مدار الـ 24 ساعة.",
+                techDetails: `
+                    <strong>المنطقة المجهزة:</strong> <br>
+                    • بناء وتأطير غرفة رصد وتحكم مركزي تعتمد بالكامل على برمجيات Dahua Technology للمؤسسات الكبرى. <br>
+                    • تركيب كاميرات متعاكسة ثنائية عند زوايا الواجهات (Dual-Angle Coverage) لتغطية مسارين بنقطة تمديد واحدة خالية من النقاط العمياء. <br>
+                    • تمرير الكابلات المحمية STP/FTP لمنع التشويش الكهربائي وتمديد قنوات صلبة مقاومة للتخريب.
+                `
+            },
+            3: {
+                title: "المشروع رقم #3: المنظومة الأمنية المتكاملة لعيادة جراحة Clinique O.R.L",
+                objective: "تأمين محيط ومداخل العيادة لضمان سلامة الطاقم الطبي والمرضى دون المساس بخصوصية الاستشارات الطبية.",
+                techDetails: `
+                    <strong>المنطقة المجهزة:</strong> <br>
+                    • توزيع كاميرات Dahua IP مدمجة أسفل حواف الألواح المعدنية (Alucobond) لحمايتها من العوامل الجوية لتوفر رؤية هابطة ممتازة للأرصفة ومداخل الطوارئ. <br>
+                    • تقسيم ذكي في شاشات الرصد يغطي نقاط التنقل العمودي (السلالم) والممرات الطويلة لمرونة تنظيم تدفق حركة المرضى وكبار السن. <br>
+                    • قراءة تلقائية للوحات المركبات بوضوح تام لسيارات الطوارئ والأطباء.
+                `
+            },
+            4: {
+                title: "المشروع رقم #4: تأمين المحلات والمجمعات التجارية الكبرى",
+                objective: "الحد من السرقات وخسائر الممرات وتأمين تداول السيولة النقدية بمكاتب الدفع POS.",
+                techDetails: `
+                    <strong>المنطقة المجهزة:</strong> <br>
+                    • كاميرات IP Dome مدمجة بالأسقف عريضة الزوايا لتكشف عمق الممرات الضيقة المتراكمة بالسلع لتفادي الزوايا الميتة. <br>
+                    • ضبط كاميرات كاشير عالية الدقة تدعم معالج معادلة الضوء الخلفي (WDR) لمعادلة وهج الإضاءة وانعكاس الأواني الفولاذية والزجاجية. <br>
+                    • ربط فوري بشاشات رصد مركزية وتطبيقات الهاتف للتحكم والمتابعة عن بعد.
+                `
+            },
+            5: {
+                title: "المشروع رقم #5: تأمين مقر الرابطة الولائية لكرة القدم بتبسة",
+                objective: "حماية المستندات والوثائق الحساسة وتأمين المكاتب التنفيذية والسيادية للرابطة.",
+                techDetails: `
+                    <strong>المنطقة المجهزة:</strong> <br>
+                    • تثبيت كاميرات خارجية في نقاط علوية استراتيجية كاشفة للمدخل الخارجي والرصيف والساحة الطرقية. <br>
+                    • دمج تكنولوجيا Ajax اللاسلكية الاستباقية لتأمين مكتب رئيس الرابطة والخدمات المالية مع مستشعرات حركة ذكية. <br>
+                    • حفظ وحماية أجهزة التسجيل NVR والشبكة بداخل خزانة معدنية Rack معزولة تماماً.
+                `
+            },
+            6: {
+                title: "المشروع رقم #6: المنظومة الأمنية الشاملة لمحطات الوقود والمجمعات الخدمية",
+                objective: "تأمين مجمع منصات ضخ الوقود والمحيط الخارجي لشركة Naftal وغيرها.",
+                techDetails: `
+                    <strong>المنطقة المجهزة:</strong> <br>
+                    • استخدام رافعات ميكانيكية ثقيلة لتركيب الكاميرات تحت الهيكل المعدني Canopies على ارتفاعات شاهقة. <br>
+                    • كاميرات IP Bullet مقاومة للعوامل الجوية وتآكل الصدأ والأبخرة البترولية بمعيار IP67. <br>
+                    • قراءة آلية للوحات السيارات ready-LPR لتتبع عمليات التزود بالوقود وتوثيقها بدقة.
+                `
+            }
+        };
+
+        function openProjectModal(id) {
+            const project = projectsData[id];
+            const modal = document.getElementById('project-modal');
+            const content = document.getElementById('project-modal-content');
+
+            content.innerHTML = `
+                <button onclick="closeProjectModal()" class="absolute top-4 left-4 p-2 bg-brand-slateAccent text-brand-textMuted hover:text-white rounded-xl transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <div class="space-y-6 text-right pt-6">
+                    <span class="inline-block px-3 py-1 bg-brand-red/10 border border-brand-red/30 text-[10px] font-bold text-brand-red rounded-full uppercase">المخطط الهندسي التفصيلي للمشروع</span>
+                    <h3 class="font-black text-xl text-white leading-tight">${project.title}</h3>
+                    <div class="w-12 h-0.5 bg-brand-red rounded-full"></div>
+                    
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-xs text-white">الهدف الاستراتيجي من المشروع:</h4>
+                        <p class="text-xs text-brand-textMuted leading-relaxed">${project.objective}</p>
+                    </div>
+
+                    <div class="space-y-2 pt-4 border-t border-white/5">
+                        <h4 class="font-bold text-xs text-white">التحليلات والتركيبات الميدانية المنجزة:</h4>
+                        <p class="text-xs text-brand-textMuted leading-relaxed">${project.techDetails}</p>
+                    </div>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProjectModal() {
+            const modal = document.getElementById('project-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on outside click
+        document.getElementById('project-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'project-modal') {
+                closeProjectModal();
+            }
+        });
+
+        // ----------------------------------------------------
+        // AI Secure Chatbot Logic
+        // ----------------------------------------------------
+        let isChatOpen = false;
+
+        function toggleAiChat() {
+            const chatbox = document.getElementById('ai-chatbox');
+            const icon = document.getElementById('ai-trigger-icon');
+            
+            if (isChatOpen) {
+                chatbox.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => chatbox.classList.add('hidden'), 300);
+                icon.setAttribute('data-lucide', 'bot');
+            } else {
+                chatbox.classList.remove('hidden');
+                setTimeout(() => chatbox.classList.remove('scale-95', 'opacity-0'), 10);
+                icon.setAttribute('data-lucide', 'chevron-down');
+            }
+            isChatOpen = !isChatOpen;
+            lucide.createIcons();
+        }
+
+        function sendQuickPrompt(promptText) {
+            document.getElementById('ai-chat-input').value = promptText;
+            document.getElementById('ai-chat-form').dispatchEvent(new Event('submit'));
+        }
+
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const inputEl = document.getElementById('ai-chat-input');
+            const query = inputEl.value.trim();
+            if (!query) return;
+
+            appendChatMessage(query, 'user');
+            inputEl.value = "";
+
+            const typingId = appendChatTypingIndicator();
+
+            try {
+                const responseText = await callGeminiAPI(query);
+                removeChatTypingIndicator(typingId);
+                appendChatMessage(responseText, 'bot');
+            } catch (error) {
+                removeChatTypingIndicator(typingId);
+                appendChatMessage("عذراً، واجهت مشكلة في الاتصال بالخادم الأمني. يرجى مراجعة اتصال الإنترنت أو التواصل هاتفياً على 0659849656.", 'bot');
+            }
+        }
+
+        function appendChatMessage(text, sender) {
+            const messagesContainer = document.getElementById('ai-messages');
+            const messageDiv = document.createElement('div');
+            
+            if (sender === 'user') {
+                messageDiv.className = "flex gap-2.5 items-start justify-end";
+                messageDiv.innerHTML = `
+                    <div class="bg-brand-red text-white p-3 rounded-2xl text-right max-w-[80%] leading-relaxed font-medium">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                messageDiv.className = "flex gap-2.5 items-start";
+                let formattedText = text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+
+                messageDiv.innerHTML = `
+                    <div class="w-6 h-6 rounded bg-brand-red text-white flex items-center justify-center font-bold shrink-0">D</div>
+                    <div class="bg-brand-card p-3 rounded-2xl border border-white/5 text-right max-w-[80%] text-white leading-relaxed">
+                        ${formattedText}
+                    </div>
+                `;
+            }
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function appendChatTypingIndicator() {
+            const messagesContainer = document.getElementById('ai-messages');
+            const typingDiv = document.createElement('div');
+            const id = 'typing-' + Date.now();
+            typingDiv.id = id;
+            typingDiv.className = "flex gap-2.5 items-start";
+            typingDiv.innerHTML = `
+                <div class="w-6 h-6 rounded bg-brand-red text-white flex items-center justify-center font-bold shrink-0">D</div>
+                <div class="bg-brand-card p-3 rounded-2xl border border-white/5 text-right text-brand-textMuted flex items-center gap-1.5">
+                    <span>جاري تحليل استفسارك الأمني</span>
+                    <span class="inline-flex gap-0.5"><span class="w-1 h-1 bg-brand-red rounded-full animate-bounce"></span><span class="w-1 h-1 bg-brand-red rounded-full animate-bounce [animation-delay:0.2s]"></span><span class="w-1 h-1 bg-brand-red rounded-full animate-bounce [animation-delay:0.4s]"></span></span>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return id;
+        }
+
+        function removeChatTypingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // Localized system rules for security AI bot if Gemini api key is empty
+        function callGeminiAPI(query) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(mockLocalSecurityAI(query));
+                }, 800);
+            });
+        }
+
+        function mockLocalSecurityAI(query) {
+            query = query.toLowerCase();
+            if (query.includes('ajax') || query.includes('إنذار') || query.includes('سرق') || query.includes('dahua') || query.includes('captor') || query.includes('tiger')) {
+                return `**أنظمة الإنذار ضد السرقة والتشويش بمؤسسة دافيس:**
+نقوم بتوفير ماركات إنذار معتمدة ومقاومة للتشويش:
+• **Ajax Systems:** المعيار الأوروبي اللاسلكي الأول (Grade 2/3) المزود بمستشعرات حركة استباقية وحماية كهرومغناطيسية.
+• **Dahua / Hikvision:** أنظمة إنذار ذكية مدمجة بكاميرات المراقبة لتوليد رصد موحد.
+• **Captor / Tiger:** أنظمة أمنية معتمدة بجودة عالية مصممة للعمل في الظروف الصناعية الشديدة وحماية الأسوار.
+يسعدنا إجراء مسح ميداني مجاني لمنشأتك وتحديد النظام الأنسب. اتصل بمديرنا التنفيذي على الرقم **0659849656** لجدولة الموعد!`;
+            }
+            if (query.includes('سعر') || query.includes('تكلفة') || query.includes('ثمن')) {
+                return `مرحباً بك! تختلف التكلفة بدقة بناءً على مساحة منشأتك وعدد كاميرات المراقبة ونوع نظام الإنذار المختار (مثل Ajax أو Tiger).
+أنصحك باستخدام **حاسبة التقدير الأمني الفورية** المتواجدة بصفحتنا لتوليد مخطط ومواصفة تقنية حية، ثم استكمال حقول استمارة طلب المعاينة بأسفل الصفحة لإرسال التقرير فوراً للواتساب **0659849656**.`;
+            }
+            return `مرحباً بك بمؤسسة Dafis Solutions بتبسة!
+نحن معتمدون رسمياً من طرف وزارة الداخلية (الاعتماد الأمني من النوع الأول) لتأمين وتجهيز كافة المنشآت الإدارية والصناعية بتبسة والولايات المجاورة.
+• خدماتنا تشمل: تركيب كاميرات المراقبة بدقة 4K/8K، أنظمة الإنذار ضد السرقة (Ajax, Captor, Tiger)، والتحكم بالدخول بيومترياً.
+يمكنك طلب دراسة هندسية ومعاينة ميدانية مجانية بالكامل بالاتصال بمديرنا التنفيذي على الرقم **0659849656** أو واتساب فورياً.`;
+        }
+
+        // Initialize state on load
+        calculateSecurityEstimate();
+        toggleAlarmBrandDisplay();
+        syncFacilityToForm();
     </script>
 </body>
 </html>
+
+```
