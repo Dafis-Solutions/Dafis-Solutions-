@@ -1,0 +1,16 @@
+# ملفات النظام وتخزين المؤقت
+.DS_Store
+Thumbs.db
+node_modules/
+
+# ملفات البيئة والمتغيرات الحساسة
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ملفات السجلات والتقارير
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
